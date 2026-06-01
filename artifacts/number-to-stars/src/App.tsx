@@ -131,7 +131,7 @@ export default function App() {
             y: w.bbox.y0,
             w: w.bbox.x1 - w.bbox.x0,
             h: w.bbox.y1 - w.bbox.y0,
-            hidden: false, // start visible, user clicks to hide
+            hidden: true, // start hidden as stars
           }));
 
         setRegions(detected);
