@@ -64,7 +64,7 @@ function AnimatedMockup() {
         borderRadius: "50%",
       }} />
 
-      {/* Background card (shifted left & tilted) */}
+      {/* Background card left tilted */}
       <div style={{
         position: "absolute",
         width: 230, height: 175,
@@ -81,7 +81,7 @@ function AnimatedMockup() {
         <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, margin: "0 16px", width: "80%" }} />
       </div>
 
-      {/* Background card (shifted right & tilted) */}
+      {/* Background card right tilted */}
       <div style={{
         position: "absolute",
         width: 230, height: 175,
@@ -103,19 +103,20 @@ function AnimatedMockup() {
         width: 250, background: "#ffffff",
         borderRadius: 16, padding: "14px 16px 18px",
         boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+        direction: "ltr",
       }}>
         {/* Card header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <span style={{
-            background: "#7c3aed", color: "#fff",
-            borderRadius: 8, padding: "3px 10px", fontSize: 13, fontWeight: 700,
-            fontFamily: "Cairo,sans-serif",
-          }}>فاتورة</span>
           <span style={{
             background: "#f3f4f6", color: "#6b7280",
             borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 600,
             fontFamily: "monospace",
           }}>#2024</span>
+          <span style={{
+            background: "#7c3aed", color: "#fff",
+            borderRadius: 8, padding: "3px 10px", fontSize: 13, fontWeight: 700,
+            fontFamily: "Cairo,sans-serif",
+          }}>فاتورة</span>
         </div>
 
         {/* Fake lines */}
@@ -123,7 +124,7 @@ function AnimatedMockup() {
         <div style={{ height: 7, background: "#e5e7eb", borderRadius: 4, marginBottom: 7, width: "75%" }} />
         <div style={{ height: 7, background: "#f3f4f6", borderRadius: 4, marginBottom: 14, width: "55%" }} />
 
-        {/* Row 1 – 3 stars (always showing) */}
+        {/* Row 1 – 3 stars */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
           <span style={{
             background: "#fef3c7", color: "#d97706",
@@ -143,34 +144,46 @@ function AnimatedMockup() {
           <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4 }} />
         </div>
 
-        {/* Row 3 – number being targeted (animated in/out) */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
-          {/* Number (fades out) */}
+        {/* Row 3 – number targeted by cursor */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative", minHeight: 30 }}>
+          {/* Number fades out when cursor clicks */}
           <span className="anim-number" style={{
             background: "#f3f4f6", color: "#374151",
             borderRadius: 8, padding: "4px 10px", fontSize: 13, fontWeight: 700,
-            fontFamily: "monospace",
+            fontFamily: "monospace", position: "absolute", left: 0,
           }}>٧٫٨٩٠</span>
-          {/* Stars (fades in) */}
+          {/* Stars fade in after click */}
           <span className="anim-stars" style={{
-            position: "absolute", left: 0,
             background: "#fef3c7", color: "#d97706",
             borderRadius: 8, padding: "4px 10px", fontSize: 15, fontWeight: 800,
-            fontFamily: "Arial,sans-serif", letterSpacing: 2,
+            fontFamily: "Arial,sans-serif", letterSpacing: 2, position: "absolute", left: 0,
           }}>★★★★</span>
-          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4, marginRight: 80 }} />
+          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4, marginLeft: 82 }} />
         </div>
+
+        {/* Click ripple – expands on click moment */}
+        <div className="anim-ripple" style={{
+          position: "absolute",
+          width: 36, height: 36, borderRadius: "50%",
+          background: "rgba(124,58,237,0.25)",
+          border: "2px solid rgba(124,58,237,0.6)",
+          bottom: 24, left: 14,
+          transform: "translate(-50%, -50%) scale(0)",
+          pointerEvents: "none",
+        }} />
       </div>
 
-      {/* Animated cursor SVG */}
+      {/* Animated cursor – hovers above number then clicks down */}
       <div className="anim-cursor" style={{
         position: "absolute", zIndex: 10,
         pointerEvents: "none",
-        top: "calc(50% + 30px)", left: "calc(50% - 85px)",
+        /* Over the ٧٫٨٩٠ number (left side of card, bottom row) */
+        top: "calc(50% + 46px)",
+        left: "calc(50% - 112px)",
       }}>
-        <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+        <svg width="26" height="30" viewBox="0 0 28 32" fill="none">
           <path d="M4 2L4 26L10 20L14 28L17 26.5L13 18.5L21 18.5L4 2Z"
-            fill="white" stroke="#333" strokeWidth="1.5" strokeLinejoin="round"/>
+            fill="white" stroke="#1e293b" strokeWidth="1.8" strokeLinejoin="round"/>
         </svg>
       </div>
     </div>
@@ -599,41 +612,53 @@ export default function App() {
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* cursor path: hover over number → move up → back → repeat */
+        /*
+          Timeline (4.5 s loop):
+          0–15%   cursor drifts in from above (translate Y: -40→0)
+          15–25%  cursor hovers over number (idle)
+          25–30%  click down (scale 0.78, tiny drop)
+          30–35%  release (scale 1)           ← number vanishes, stars appear
+          35–70%  cursor idles over stars
+          70–80%  cursor drifts away upward
+          80–100% pause before repeat
+        */
         @keyframes cursorPath {
-          0%   { transform: translate(0px, 0px) scale(1); }
-          15%  { transform: translate(0px, 0px) scale(0.85); }
-          20%  { transform: translate(0px, 0px) scale(1); }
-          40%  { transform: translate(-40px, -55px) scale(1); }
-          55%  { transform: translate(-40px, -55px) scale(0.85); }
-          60%  { transform: translate(-40px, -55px) scale(1); }
-          80%  { transform: translate(0px, 0px) scale(1); }
-          100% { transform: translate(0px, 0px) scale(1); }
+          0%        { transform: translate(0px, -40px) scale(1);   opacity: 0; }
+          10%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
+          25%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
+          30%       { transform: translate(0px, 4px)   scale(0.78);opacity: 1; }
+          36%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
+          68%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
+          80%       { transform: translate(0px, -40px) scale(1);   opacity: 0; }
+          100%      { transform: translate(0px, -40px) scale(1);   opacity: 0; }
         }
 
-        /* number fades out then back in */
+        /* ripple expands at click moment */
+        @keyframes rippleAnim {
+          0%, 28%   { transform: translate(-50%,-50%) scale(0); opacity: 0; }
+          32%       { transform: translate(-50%,-50%) scale(0.3); opacity: 1; }
+          50%       { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+          100%      { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+        }
+
+        /* number disappears right when cursor clicks */
         @keyframes numberFade {
-          0%, 10%  { opacity: 1; }
-          20%, 70% { opacity: 0; }
-          80%, 100%{ opacity: 1; }
+          0%, 28%   { opacity: 1; }
+          36%, 82%  { opacity: 0; }
+          90%, 100% { opacity: 1; }
         }
 
-        /* stars fade in then back out */
+        /* stars appear after click */
         @keyframes starsFade {
-          0%, 10%  { opacity: 0; }
-          20%, 70% { opacity: 1; }
-          80%, 100%{ opacity: 0; }
+          0%, 30%   { opacity: 0; }
+          38%, 80%  { opacity: 1; }
+          88%, 100% { opacity: 0; }
         }
 
-        .anim-cursor {
-          animation: cursorPath 3s ease-in-out infinite;
-        }
-        .anim-number {
-          animation: numberFade 3s ease-in-out infinite;
-        }
-        .anim-stars {
-          animation: starsFade 3s ease-in-out infinite;
-        }
+        .anim-cursor  { animation: cursorPath  4.5s ease-in-out infinite; }
+        .anim-ripple  { animation: rippleAnim  4.5s ease-out   infinite; }
+        .anim-number  { animation: numberFade  4.5s ease-in-out infinite; }
+        .anim-stars   { animation: starsFade   4.5s ease-in-out infinite; }
       `}</style>
     </div>
   );
