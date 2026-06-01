@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --font-sans: var(--app-font-sans);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --background: 220 20% 10%;
+  --foreground: 45 100% 95%;
+  --border: 43 74% 49%;
+  --card: 220 20% 14%;
+  --card-foreground: 45 100% 95%;
+  --primary: 35 100% 55%;
+  --primary-foreground: 220 20% 10%;
+  --muted: 220 15% 20%;
+  --muted-foreground: 45 30% 65%;
+  --app-font-sans: 'Cairo', 'Segoe UI', sans-serif;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--app-font-sans);
+    direction: rtl;
+    min-height: 100vh;
+  }
+}
