@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm --filter @workspace/number-to-stars run build",
+  "outputDirectory": "artifacts/number-to-stars/dist",
+  "installCommand": "pnpm install",
+  "framework": null
+}
