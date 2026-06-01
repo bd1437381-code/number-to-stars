@@ -175,6 +175,18 @@ export default function App() {
     if (canvas) canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  const hideAll = () => {
+    if (!regions.length) return;
+    setHistory((h) => [...h, regions]);
+    setRegions((prev) => prev.map((r) => ({ ...r, hidden: true })));
+  };
+
+  const showAll = () => {
+    if (!regions.length) return;
+    setHistory((h) => [...h, regions]);
+    setRegions((prev) => prev.map((r) => ({ ...r, hidden: false })));
+  };
+
   const hiddenCount = regions.filter((r) => r.hidden).length;
   const detectedCount = regions.length;
 
@@ -283,6 +295,41 @@ export default function App() {
                 <ColorDot key={c.value} color={c.value} selected={starColor === c.value} onClick={() => setStarColor(c.value)} />
               ))}
             </Row>
+
+            {/* Hide all / Show all */}
+            {detectedCount > 0 && (
+              <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+                <button
+                  onClick={hideAll}
+                  disabled={hiddenCount === detectedCount}
+                  style={{
+                    flex: 1, padding: "11px 0", borderRadius: 12, border: "none",
+                    background: hiddenCount === detectedCount ? "#1e3a2f" : "#15803d",
+                    color: hiddenCount === detectedCount ? "#4ade8055" : "#fff",
+                    fontWeight: 700, fontSize: 15, cursor: hiddenCount === detectedCount ? "not-allowed" : "pointer",
+                    fontFamily: "Cairo,sans-serif", display: "flex", alignItems: "center",
+                    justifyContent: "center", gap: 6, transition: "background 0.2s",
+                  }}
+                >
+                  ★ إخفاء الكل
+                </button>
+                <button
+                  onClick={showAll}
+                  disabled={hiddenCount === 0}
+                  style={{
+                    flex: 1, padding: "11px 0", borderRadius: 12, border: "none",
+                    background: hiddenCount === 0 ? "#1e293b" : "#334155",
+                    color: hiddenCount === 0 ? "#47556940" : "#94a3b8",
+                    fontWeight: 700, fontSize: 15, cursor: hiddenCount === 0 ? "not-allowed" : "pointer",
+                    fontFamily: "Cairo,sans-serif", display: "flex", alignItems: "center",
+                    justifyContent: "center", gap: 6, border: "1.5px solid #334155",
+                    transition: "background 0.2s",
+                  }}
+                >
+                  👁 إظهار الكل
+                </button>
+              </div>
+            )}
 
             {/* Controls row */}
             <div style={{
