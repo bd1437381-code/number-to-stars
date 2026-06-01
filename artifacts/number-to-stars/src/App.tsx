@@ -1,5 +1,13 @@
 import { useRef, useState, useCallback, useEffect } from "react";
-import { recognize } from "tesseract.js";
+
+/* Tesseract.js loaded via CDN script tag in index.html */
+declare const Tesseract: {
+  recognize: (
+    image: string,
+    lang: string,
+    options?: { logger?: (m: { status: string; progress: number }) => void }
+  ) => Promise<{ data: { words: Array<{ text: string; confidence: number; bbox: { x0: number; y0: number; x1: number; y1: number } }> } }>;
+};
 
 /* ─── types ────────────────────────────────────────────────────── */
 interface Region {
@@ -131,7 +139,7 @@ export default function App() {
         setProgress(15);
 
         try {
-          const result = await recognize(url, "ara+eng", {
+          const result = await Tesseract.recognize(url, "ara+eng", {
             logger: (m) => {
               if (m.status === "recognizing text")
                 setProgress(15 + Math.round((m.progress || 0) * 83));
