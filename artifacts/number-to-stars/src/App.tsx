@@ -52,138 +52,193 @@ function drawRegion(ctx: CanvasRenderingContext2D, r: Region, color: string) {
   ctx.fillText(stars, r.x + r.w / 2, r.y + r.h / 2);
 }
 
+/* ─── Floating star particle ────────────────────────────────────── */
+function Particle({ style }: { style: React.CSSProperties }) {
+  return (
+    <div style={{
+      position: "absolute", color: "#f59e0b", fontSize: 12,
+      pointerEvents: "none", userSelect: "none",
+      ...style,
+    }}>★</div>
+  );
+}
+
 /* ─── Animated mockup component ─────────────────────────────────── */
 function AnimatedMockup() {
   return (
-    <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", height: 340, userSelect: "none" }}>
-      {/* Glow behind card */}
+    <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", height: 360, userSelect: "none" }}>
+
+      {/* Floating background particles */}
+      <Particle style={{ top: "8%",  left: "8%",  opacity: 0.5, animation: "floatP1 5s ease-in-out infinite" }} />
+      <Particle style={{ top: "12%", right: "10%", opacity: 0.3, animation: "floatP2 6s ease-in-out infinite", fontSize: 8 }} />
+      <Particle style={{ bottom: "14%", left: "14%", opacity: 0.4, animation: "floatP1 7s ease-in-out infinite 1s", fontSize: 9 }} />
+      <Particle style={{ bottom: "20%", right: "8%",  opacity: 0.35, animation: "floatP2 5.5s ease-in-out infinite 2s", fontSize: 10 }} />
+      <Particle style={{ top: "40%",  left: "4%",   opacity: 0.25, animation: "floatP1 8s ease-in-out infinite 0.5s", fontSize: 7 }} />
+      <Particle style={{ top: "55%",  right: "5%",  opacity: 0.3,  animation: "floatP2 6.5s ease-in-out infinite 1.5s", fontSize: 8 }} />
+
+      {/* Soft glow blob */}
       <div style={{
-        position: "absolute", width: 260, height: 220,
-        background: "radial-gradient(ellipse, rgba(124,58,237,0.45) 0%, transparent 70%)",
-        top: "50%", left: "50%", transform: "translate(-50%, -50%)",
-        borderRadius: "50%",
+        position: "absolute", width: 300, height: 260,
+        background: "radial-gradient(ellipse, rgba(109,40,217,0.55) 0%, transparent 68%)",
+        top: "50%", left: "50%", transform: "translate(-50%,-52%)",
+        borderRadius: "50%", filter: "blur(2px)",
       }} />
 
-      {/* Background card left tilted */}
+      {/* Background card – left tilt */}
       <div style={{
         position: "absolute",
-        width: 230, height: 175,
-        background: "rgba(255,255,255,0.06)",
-        border: "1.5px solid rgba(255,255,255,0.12)",
-        borderRadius: 14,
-        top: "calc(50% - 20px)", left: "calc(50% - 130px)",
-        transform: "translateY(-50%) rotate(-4deg)",
-        backdropFilter: "blur(4px)",
+        width: 234, height: 182,
+        background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
+        border: "1px solid rgba(255,255,255,0.13)",
+        borderRadius: 16,
+        top: "calc(50% - 10px)", left: "calc(50% - 134px)",
+        transform: "translateY(-50%) rotate(-5deg)",
+        backdropFilter: "blur(6px)",
         overflow: "hidden",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
       }}>
-        <div style={{ height: 8, background: "rgba(255,255,255,0.08)", borderRadius: 4, margin: "18px 16px 10px" }} />
-        <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, margin: "0 16px 8px", width: "60%" }} />
-        <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, margin: "0 16px", width: "80%" }} />
+        <div style={{ height: 9, background: "rgba(255,255,255,0.1)", borderRadius: 5, margin: "20px 18px 12px" }} />
+        <div style={{ height: 9, background: "rgba(255,255,255,0.07)", borderRadius: 5, margin: "0 18px 9px", width: "65%" }} />
+        <div style={{ height: 9, background: "rgba(255,255,255,0.05)", borderRadius: 5, margin: "0 18px", width: "82%" }} />
+        <div style={{ height: 9, background: "rgba(255,255,255,0.04)", borderRadius: 5, margin: "9px 18px 0", width: "50%" }} />
       </div>
 
-      {/* Background card right tilted */}
+      {/* Background card – right tilt */}
       <div style={{
         position: "absolute",
-        width: 230, height: 175,
-        background: "rgba(255,255,255,0.06)",
-        border: "1.5px solid rgba(255,255,255,0.12)",
-        borderRadius: 14,
-        top: "calc(50% - 20px)", left: "calc(50% - 90px)",
-        transform: "translateY(-50%) rotate(3.5deg)",
-        backdropFilter: "blur(4px)",
+        width: 234, height: 182,
+        background: "linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 16,
+        top: "calc(50% - 10px)", left: "calc(50% - 95px)",
+        transform: "translateY(-50%) rotate(4deg)",
+        backdropFilter: "blur(6px)",
         overflow: "hidden",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
       }}>
-        <div style={{ height: 8, background: "rgba(255,255,255,0.08)", borderRadius: 4, margin: "18px 16px 10px" }} />
-        <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4, margin: "0 16px 8px", width: "70%" }} />
+        <div style={{ height: 9, background: "rgba(255,255,255,0.09)", borderRadius: 5, margin: "20px 18px 12px" }} />
+        <div style={{ height: 9, background: "rgba(255,255,255,0.06)", borderRadius: 5, margin: "0 18px 9px", width: "72%" }} />
+        <div style={{ height: 9, background: "rgba(255,255,255,0.04)", borderRadius: 5, margin: "0 18px", width: "58%" }} />
       </div>
 
-      {/* Main white invoice card */}
+      {/* ── Main invoice card ── */}
       <div style={{
         position: "relative", zIndex: 3,
-        width: 250, background: "#ffffff",
-        borderRadius: 16, padding: "14px 16px 18px",
-        boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+        width: 256,
+        background: "linear-gradient(160deg, #ffffff 0%, #f8f7ff 100%)",
+        borderRadius: 20,
+        padding: "16px 18px 20px",
+        boxShadow: "0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.12)",
         direction: "ltr",
       }}>
-        {/* Card header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+
+        {/* Purple top accent line */}
+        <div style={{
+          position: "absolute", top: 0, left: "15%", right: "15%",
+          height: 3, borderRadius: "0 0 4px 4px",
+          background: "linear-gradient(90deg, #7c3aed, #a855f7)",
+        }} />
+
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <span style={{
             background: "#f3f4f6", color: "#6b7280",
-            borderRadius: 6, padding: "2px 8px", fontSize: 11, fontWeight: 600,
-            fontFamily: "monospace",
+            borderRadius: 6, padding: "3px 9px", fontSize: 11, fontWeight: 600,
+            fontFamily: "monospace", letterSpacing: 0.5,
           }}>#2024</span>
           <span style={{
-            background: "#7c3aed", color: "#fff",
-            borderRadius: 8, padding: "3px 10px", fontSize: 13, fontWeight: 700,
+            background: "linear-gradient(135deg,#7c3aed,#6d28d9)",
+            color: "#fff", borderRadius: 10,
+            padding: "4px 12px", fontSize: 13, fontWeight: 700,
             fontFamily: "Cairo,sans-serif",
+            boxShadow: "0 3px 10px rgba(109,40,217,0.4)",
           }}>فاتورة</span>
         </div>
 
-        {/* Fake lines */}
-        <div style={{ height: 7, background: "#e5e7eb", borderRadius: 4, marginBottom: 7 }} />
-        <div style={{ height: 7, background: "#e5e7eb", borderRadius: 4, marginBottom: 7, width: "75%" }} />
-        <div style={{ height: 7, background: "#f3f4f6", borderRadius: 4, marginBottom: 14, width: "55%" }} />
+        {/* Fake text lines */}
+        <div style={{ height: 7, background: "#e5e7eb", borderRadius: 4, marginBottom: 6 }} />
+        <div style={{ height: 7, background: "#edeef0", borderRadius: 4, marginBottom: 6, width: "78%" }} />
+        <div style={{ height: 7, background: "#f1f2f4", borderRadius: 4, marginBottom: 16, width: "52%" }} />
 
-        {/* Row 1 – 3 stars */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+        {/* Row 1 – 3 stars (static) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 9 }}>
           <span style={{
-            background: "#fef3c7", color: "#d97706",
-            borderRadius: 8, padding: "4px 10px", fontSize: 15, fontWeight: 800,
-            fontFamily: "Arial,sans-serif", letterSpacing: 2,
+            background: "linear-gradient(135deg,#fef3c7,#fde68a)",
+            color: "#b45309", borderRadius: 9,
+            padding: "5px 11px", fontSize: 14, fontWeight: 900,
+            fontFamily: "Arial,sans-serif", letterSpacing: 3,
+            boxShadow: "0 2px 8px rgba(245,158,11,0.3)",
           }}>★★★</span>
-          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4 }} />
+          <div style={{ flex: 1, height: 6, background: "#f3f4f6", borderRadius: 4 }} />
         </div>
 
-        {/* Row 2 – 2 stars */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+        {/* Row 2 – 2 stars (static) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 9 }}>
           <span style={{
-            background: "#fef3c7", color: "#d97706",
-            borderRadius: 8, padding: "4px 10px", fontSize: 15, fontWeight: 800,
-            fontFamily: "Arial,sans-serif", letterSpacing: 2,
+            background: "linear-gradient(135deg,#fef3c7,#fde68a)",
+            color: "#b45309", borderRadius: 9,
+            padding: "5px 11px", fontSize: 14, fontWeight: 900,
+            fontFamily: "Arial,sans-serif", letterSpacing: 3,
+            boxShadow: "0 2px 8px rgba(245,158,11,0.3)",
           }}>★★</span>
-          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4 }} />
+          <div style={{ flex: 1, height: 6, background: "#f3f4f6", borderRadius: 4 }} />
         </div>
 
-        {/* Row 3 – number targeted by cursor */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative", minHeight: 30 }}>
-          {/* Number fades out when cursor clicks */}
+        {/* Row 3 – animated number → stars */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, position: "relative", minHeight: 32 }}>
+          {/* Number */}
           <span className="anim-number" style={{
             background: "#f3f4f6", color: "#374151",
-            borderRadius: 8, padding: "4px 10px", fontSize: 13, fontWeight: 700,
-            fontFamily: "monospace", position: "absolute", left: 0,
+            borderRadius: 9, padding: "5px 11px",
+            fontSize: 13, fontWeight: 700, fontFamily: "monospace",
+            position: "absolute", left: 0, whiteSpace: "nowrap",
+            border: "1.5px solid transparent",
+            transition: "border-color 0.2s",
           }}>٧٫٨٩٠</span>
-          {/* Stars fade in after click */}
+          {/* Hover highlight ring on number (appears before click) */}
+          <span className="anim-highlight" style={{
+            background: "transparent",
+            borderRadius: 9, padding: "5px 11px",
+            fontSize: 13, fontWeight: 700, fontFamily: "monospace",
+            position: "absolute", left: 0, whiteSpace: "nowrap",
+            border: "1.5px solid #7c3aed",
+            color: "transparent", pointerEvents: "none",
+          }}>٧٫٨٩٠</span>
+          {/* Stars */}
           <span className="anim-stars" style={{
-            background: "#fef3c7", color: "#d97706",
-            borderRadius: 8, padding: "4px 10px", fontSize: 15, fontWeight: 800,
-            fontFamily: "Arial,sans-serif", letterSpacing: 2, position: "absolute", left: 0,
+            background: "linear-gradient(135deg,#fef3c7,#fde68a)",
+            color: "#b45309", borderRadius: 9,
+            padding: "5px 11px", fontSize: 14, fontWeight: 900,
+            fontFamily: "Arial,sans-serif", letterSpacing: 3,
+            position: "absolute", left: 0,
+            boxShadow: "0 2px 8px rgba(245,158,11,0.3)",
           }}>★★★★</span>
-          <div style={{ flex: 1, height: 7, background: "#f3f4f6", borderRadius: 4, marginLeft: 82 }} />
+          <div style={{ flex: 1, height: 6, background: "#f3f4f6", borderRadius: 4, marginLeft: 88 }} />
         </div>
 
-        {/* Click ripple – expands on click moment */}
+        {/* Click ripple */}
         <div className="anim-ripple" style={{
           position: "absolute",
-          width: 36, height: 36, borderRadius: "50%",
-          background: "rgba(124,58,237,0.25)",
-          border: "2px solid rgba(124,58,237,0.6)",
-          bottom: 24, left: 14,
-          transform: "translate(-50%, -50%) scale(0)",
+          width: 44, height: 44, borderRadius: "50%",
+          background: "rgba(124,58,237,0.18)",
+          border: "1.5px solid rgba(124,58,237,0.7)",
+          bottom: 26, left: 28,
+          transform: "translate(-50%,-50%) scale(0)",
           pointerEvents: "none",
         }} />
       </div>
 
-      {/* Animated cursor – hovers above number then clicks down */}
+      {/* ── Animated cursor ── */}
       <div className="anim-cursor" style={{
-        position: "absolute", zIndex: 10,
-        pointerEvents: "none",
-        /* Over the ٧٫٨٩٠ number (left side of card, bottom row) */
-        top: "calc(50% + 46px)",
-        left: "calc(50% - 112px)",
+        position: "absolute", zIndex: 10, pointerEvents: "none",
+        top: "calc(50% + 48px)",
+        left: "calc(50% - 108px)",
+        filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.4))",
       }}>
-        <svg width="26" height="30" viewBox="0 0 28 32" fill="none">
+        {/* Cursor SVG */}
+        <svg width="24" height="28" viewBox="0 0 28 32" fill="none">
           <path d="M4 2L4 26L10 20L14 28L17 26.5L13 18.5L21 18.5L4 2Z"
-            fill="white" stroke="#1e293b" strokeWidth="1.8" strokeLinejoin="round"/>
+            fill="white" stroke="#6d28d9" strokeWidth="2" strokeLinejoin="round"/>
         </svg>
       </div>
     </div>
@@ -612,53 +667,71 @@ export default function App() {
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* floating star particles */
+        @keyframes floatP1 {
+          0%, 100% { transform: translateY(0px)   rotate(0deg);   }
+          50%      { transform: translateY(-14px)  rotate(15deg);  }
+        }
+        @keyframes floatP2 {
+          0%, 100% { transform: translateY(0px)   rotate(0deg);   }
+          50%      { transform: translateY(10px)   rotate(-12deg); }
+        }
+
         /*
-          Timeline (4.5 s loop):
-          0–15%   cursor drifts in from above (translate Y: -40→0)
-          15–25%  cursor hovers over number (idle)
-          25–30%  click down (scale 0.78, tiny drop)
-          30–35%  release (scale 1)           ← number vanishes, stars appear
-          35–70%  cursor idles over stars
-          70–80%  cursor drifts away upward
-          80–100% pause before repeat
+          Timeline (5s loop):
+          0–12%   cursor slides in from above
+          12–24%  hover – highlight ring appears on number
+          24–30%  click down (scale + drop)
+          31–36%  release → number→stars, ripple fires
+          36–72%  cursor lingers over stars
+          72–82%  cursor slides back up & fades
+          82–100% pause (number returns quietly)
         */
         @keyframes cursorPath {
-          0%        { transform: translate(0px, -40px) scale(1);   opacity: 0; }
-          10%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
-          25%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
-          30%       { transform: translate(0px, 4px)   scale(0.78);opacity: 1; }
-          36%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
-          68%       { transform: translate(0px, 0px)   scale(1);   opacity: 1; }
-          80%       { transform: translate(0px, -40px) scale(1);   opacity: 0; }
-          100%      { transform: translate(0px, -40px) scale(1);   opacity: 0; }
+          0%   { transform: translate(0,-44px) scale(1);    opacity: 0; }
+          10%  { transform: translate(0, 0px)  scale(1);    opacity: 1; }
+          24%  { transform: translate(0, 0px)  scale(1);    opacity: 1; }
+          29%  { transform: translate(0, 5px)  scale(0.74); opacity: 1; }
+          36%  { transform: translate(0, 0px)  scale(1);    opacity: 1; }
+          70%  { transform: translate(0, 0px)  scale(1);    opacity: 1; }
+          80%  { transform: translate(0,-44px) scale(1);    opacity: 0; }
+          100% { transform: translate(0,-44px) scale(1);    opacity: 0; }
         }
 
-        /* ripple expands at click moment */
+        /* purple ring around number before click */
+        @keyframes highlightRing {
+          0%, 10%  { opacity: 0; }
+          16%, 27% { opacity: 1; }
+          32%, 100%{ opacity: 0; }
+        }
+
+        /* ripple on click */
         @keyframes rippleAnim {
-          0%, 28%   { transform: translate(-50%,-50%) scale(0); opacity: 0; }
-          32%       { transform: translate(-50%,-50%) scale(0.3); opacity: 1; }
-          50%       { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
-          100%      { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+          0%, 28%  { transform: translate(-50%,-50%) scale(0);   opacity: 0; }
+          33%      { transform: translate(-50%,-50%) scale(0.4);  opacity: 1; }
+          55%      { transform: translate(-50%,-50%) scale(1.6);  opacity: 0; }
+          100%     { transform: translate(-50%,-50%) scale(1.6);  opacity: 0; }
         }
 
-        /* number disappears right when cursor clicks */
+        /* number fades on click */
         @keyframes numberFade {
-          0%, 28%   { opacity: 1; }
-          36%, 82%  { opacity: 0; }
-          90%, 100% { opacity: 1; }
+          0%, 27%  { opacity: 1; }
+          35%, 84% { opacity: 0; }
+          92%, 100%{ opacity: 1; }
         }
 
         /* stars appear after click */
         @keyframes starsFade {
-          0%, 30%   { opacity: 0; }
-          38%, 80%  { opacity: 1; }
-          88%, 100% { opacity: 0; }
+          0%, 30%  { opacity: 0; }
+          38%, 81% { opacity: 1; }
+          89%, 100%{ opacity: 0; }
         }
 
-        .anim-cursor  { animation: cursorPath  4.5s ease-in-out infinite; }
-        .anim-ripple  { animation: rippleAnim  4.5s ease-out   infinite; }
-        .anim-number  { animation: numberFade  4.5s ease-in-out infinite; }
-        .anim-stars   { animation: starsFade   4.5s ease-in-out infinite; }
+        .anim-cursor    { animation: cursorPath  5s ease-in-out infinite; }
+        .anim-highlight { animation: highlightRing 5s ease-in-out infinite; }
+        .anim-ripple    { animation: rippleAnim  5s ease-out   infinite; }
+        .anim-number    { animation: numberFade  5s ease-in-out infinite; }
+        .anim-stars     { animation: starsFade   5s ease-in-out infinite; }
       `}</style>
     </div>
   );
