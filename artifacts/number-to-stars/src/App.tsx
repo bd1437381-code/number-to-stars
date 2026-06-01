@@ -59,16 +59,27 @@ export default function App() {
 
       nums.forEach((n) => {
         if (!n.hidden) return;
-        ctx.fillStyle = "rgba(245, 245, 245, 0.92)";
+        // white box over the number
+        ctx.fillStyle = "rgba(248, 248, 248, 0.95)";
         ctx.fillRect(n.x, n.y, n.w, n.h);
-        const fontSize = Math.max(10, Math.min(n.h * 0.65, 22));
+
+        // star count = number of digits in the text
+        const digitCount = n.text.replace(/\D/g, "").length || 1;
+        const stars = "★".repeat(digitCount);
+
+        // fit font size so stars fill the box width
+        let fontSize = Math.max(8, n.h * 0.68);
         ctx.font = `bold ${fontSize}px Arial`;
+        let textW = ctx.measureText(stars).width;
+        if (textW > n.w - 4) {
+          fontSize = fontSize * ((n.w - 4) / textW);
+          ctx.font = `bold ${fontSize}px Arial`;
+        }
+
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
-        const starsCount = Math.max(3, Math.ceil(n.w / (fontSize * 0.75)));
-        const stars = "★".repeat(starsCount);
         ctx.fillStyle = sc;
-        ctx.fillText(stars, n.x + n.w / 2, n.y + n.h / 2, n.w - 4);
+        ctx.fillText(stars, n.x + n.w / 2, n.y + n.h / 2);
       });
     },
     []
